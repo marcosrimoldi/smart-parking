@@ -9,7 +9,9 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
@@ -18,7 +20,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.google.android.gms.internal.zzt.TAG;
 
@@ -29,11 +32,7 @@ public class CustomFirebaseInstanceIdService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-
-        // If you want to send messages to this application instance or
-        // manage this apps subscriptions on the server side, send the
-        // Instance ID token to your app server.
-        //sendRegistrationToServer(refreshedToken);
+        this.sendRegistrationToServer(refreshedToken);
     }
 
 
@@ -50,40 +49,31 @@ public class CustomFirebaseInstanceIdService extends FirebaseInstanceIdService {
         String result = "";
         try {
 
-            // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
-            // 2. make POST request to the given URL
-            HttpPost httpPost = new HttpPost(MessageFormat.format(Constants.POSITION_URI,1));
+            HttpEntityEnclosingRequestBase httpRequest;
+            if (HttpPut.METHOD_NAME.equals(tokenDTO.getMethod())) {
+                httpRequest = new HttpPut(Constants.SERVER_BASE + tokenDTO.getServiceURI());
+            }
+            else {
+                httpRequest = new HttpPost(Constants.SERVER_BASE + tokenDTO.getServiceURI());
+            }
             String json = "";
 
-            // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("token", tokenDTO.token);
+            HashMap<String, Object> params = tokenDTO.getPropertiesAsMap();
+            for (Map.Entry<String, Object> entry : params.entrySet()) {
+                jsonObject.accumulate(entry.getKey(), entry.getValue());
+            }
 
-            // 4. convert JSONObject to JSON to String
             json = jsonObject.toString();
-
-            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
-            // ObjectMapper mapper = new ObjectMapper();
-            // json = mapper.writeValueAsString(person);
-
-            // 5. set json to StringEntity
             StringEntity se = new StringEntity(json);
+            httpRequest.setEntity(se);
+            httpRequest.setHeader("Accept", "application/json");
+            httpRequest.setHeader("Content-type", "application/json");
+            HttpResponse httpResponse = httpclient.execute(httpRequest);
 
-            // 6. set httpPost Entity
-            httpPost.setEntity(se);
-
-            // 7. Set some headers to inform server about the type of the content
-            httpPost.setHeader("Accept", "application/json");
-            httpPost.setHeader("Content-type", "application/json");
-
-            // 8. Execute POST request to the given URL
-            HttpResponse httpResponse = httpclient.execute(httpPost);
-
-            // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
 
-            // 10. convert inputstream to string
             if(inputStream != null)
                 result = convertInputStreamToString(inputStream);
             else
@@ -93,7 +83,6 @@ public class CustomFirebaseInstanceIdService extends FirebaseInstanceIdService {
             Log.d("InputStream", e.getLocalizedMessage());
         }
 
-        // 11. return result
         return result;
     }
 
