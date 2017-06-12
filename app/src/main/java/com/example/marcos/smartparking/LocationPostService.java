@@ -159,7 +159,11 @@ public class LocationPostService extends Service {
     private class StartParkingAsyncTask extends HttpAsyncTask {
         @Override
         protected void onPostExecute(String result) {
-            LocationPostService.this.currentParkingId = Long.valueOf(result);
+           try {
+               LocationPostService.this.currentParkingId = Long.valueOf(result);
+           } catch(NumberFormatException e) {
+
+           }
         }
     }
 
@@ -167,7 +171,7 @@ public class LocationPostService extends Service {
         @Override
         protected void onPostExecute(String result) {
             LocationPostService.this.currentParkingId = 0l;
-            Toast.makeText(getBaseContext(), "Costo total: " + result, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Costo total: " + result, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -179,7 +183,7 @@ public class LocationPostService extends Service {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -191,7 +195,7 @@ public class LocationPostService extends Service {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
         }
     }
 

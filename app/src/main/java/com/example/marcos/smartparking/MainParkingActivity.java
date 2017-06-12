@@ -61,7 +61,7 @@ public class MainParkingActivity extends AppCompatActivity
                     final EditText input = (EditText) findViewById(R.id.domainText);
                     locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            500, 0, locationListener);
+                            30000, 0, locationListener);
 
                     locationPostService.postStartParking(new ParkingDTO(input.getText().toString(),
                             getLastKnownLocation()));
@@ -89,13 +89,13 @@ public class MainParkingActivity extends AppCompatActivity
     ServiceConnection mConnection = new ServiceConnection() {
 
         public void onServiceDisconnected(ComponentName name) {
-            Toast.makeText(MainParkingActivity.this, "Service is disconnected", Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainParkingActivity.this, "Service is disconnected", Toast.LENGTH_LONG).show();
             mBounded = false;
             locationPostService = null;
         }
 
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Toast.makeText(MainParkingActivity.this, "Service is connected", Toast.LENGTH_LONG).show();
+            //Toast.makeText(MainParkingActivity.this, "Service is connected", Toast.LENGTH_LONG).show();
             mBounded = true;
             LocationPostService.LocalBinder mLocalBinder = (LocationPostService.LocalBinder)service;
             locationPostService = mLocalBinder.getServerInstance();
