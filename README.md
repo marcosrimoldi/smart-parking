@@ -1,1 +1,5 @@
 # smart-parking
+# server api-key AIzaSyCxNb3OJw9N4Ulc9Fq1MCG_gtrXH3rLsVs
+# App ID 1:190411307237:android:72383e5eb193c6a8
+# Package name com.example.marcos.smartparking
+# Marcos MotoG cHuHzsvOz68:APA91bHVCsD3uNl_smE6QK1G2BOiEp7u9whfNHhh_tFW7IOOuC0wvzZG3AwxghihWEDdGjBryE2P7k5wV1nZ50XXuFmShiUxDO_6HXlRM4JFEb4AwTtr0SBHl4c41JfQ0YYEhwVdKlAv

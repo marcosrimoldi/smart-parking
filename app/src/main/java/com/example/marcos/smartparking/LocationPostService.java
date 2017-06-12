@@ -46,13 +46,17 @@ public class LocationPostService extends Service {
     }
 
     public void postStopParking() {
-        new StopParkingAsyncTask().execute(new EmptyDTO(
-                MessageFormat.format(Constants.STOP_PARKING_URI, Constants.userIDNumber, this.currentParkingId),
-                HttpDelete.METHOD_NAME));
+        if (this.currentParkingId != 0l) {
+            new StopParkingAsyncTask().execute(new EmptyDTO(
+                    MessageFormat.format(Constants.STOP_PARKING_URI, Constants.userIDNumber, this.currentParkingId),
+                    HttpDelete.METHOD_NAME));
+        }
     }
 
     public void postStartParking(ParkingDTO parkingDTO) {
-        new StartParkingAsyncTask().execute(parkingDTO);
+        if (this.currentParkingId == 0l) {
+            new StartParkingAsyncTask().execute(parkingDTO);
+        }
     }
 
     public void postLocation(LocationDTO locationDTO) {
