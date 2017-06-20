@@ -1,10 +1,13 @@
 <resources>
-    <string name="app_name">SmartParking</string>
+    <string name="app_name">San Miguel Municipio</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_main_parking">Smart Parking</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_main_parking">Estacionamiento</string>
+    <string name="parking">Estacionamiento</string>
+    <string name="points_of_sale">Puntos de Venta</string>
+    <string name="availability">Disponibilidad</string>
 
     <string name="action_settings">Settings</string>
+    <string name="parking_start">Comenzar</string>
+    <string name="parking_finish">Finalizar</string>
+    <string name="domain">Dominio</string>
 </resources>

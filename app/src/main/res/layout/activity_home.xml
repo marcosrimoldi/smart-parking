@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:background="@drawable/msn"
+tools:context="com.example.marcos.smartparking.HomeActivity"
+android:orientation="horizontal"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:gravity="center">
+
+    <Button
+        android:id="@+id/parkingButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:layout_margin="10dp"
+        android:text="@string/parking" />
+
+    <Button
+        android:id="@+id/button12"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/parkingButton"
+        android:background="@drawable/button"
+        android:layout_margin="10dp"
+        android:text="@string/points_of_sale" />
+
+    <Button
+        android:id="@+id/button10"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button12"
+        android:background="@drawable/button"
+        android:layout_margin="10dp"
+        android:text="@string/availability" />
+</RelativeLayout>
