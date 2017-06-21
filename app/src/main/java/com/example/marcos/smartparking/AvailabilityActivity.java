@@ -1,5 +1,6 @@
 package com.example.marcos.smartparking;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -23,6 +24,7 @@ public class AvailabilityActivity extends AppCompatActivity implements ServiceCa
 
     private AvailabilityService availabilityService;
     boolean mBounded;
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,11 @@ public class AvailabilityActivity extends AppCompatActivity implements ServiceCa
         setContentView(R.layout.activity_availability);
         ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.loading));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setCancelable(false);
 
         final Button button = (Button) findViewById(R.id.searchButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -49,6 +56,8 @@ public class AvailabilityActivity extends AppCompatActivity implements ServiceCa
                 if (isValid) {
                     availabilityService.checkAvailability(new AvailabilityDTO(streetInput.getText().toString(),
                             Integer.valueOf(numberInput.getText().toString())));
+
+                    progress.show();
                 }
             }
         });
@@ -113,6 +122,8 @@ public class AvailabilityActivity extends AppCompatActivity implements ServiceCa
                     image.setImageResource(R.drawable.traffic_light_red);
                     break;
             }
+            progress.dismiss();
+
         } catch (JSONException e) {
             Toast.makeText(AvailabilityActivity.this, "Servicio no disponible.", Toast.LENGTH_LONG).show();
         }

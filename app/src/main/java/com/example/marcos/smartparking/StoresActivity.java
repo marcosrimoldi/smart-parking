@@ -1,5 +1,6 @@
 package com.example.marcos.smartparking;
 
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +35,7 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
     private StoresService storesService;
     boolean mBounded;
     private LocationManager locationManager;
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,11 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
         setContentView(R.layout.activity_stores);
         ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.loading));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setCancelable(false);
 
         if (checkLocationPermission()) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -101,6 +108,7 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
 
             if (checkLocationPermission()) {
                 storesService.searchStores(new SearchStoreDTO(Constants.userIDNumber, getLastKnownLocation()));
+                progress.show();
             }
         }
     };
@@ -124,6 +132,7 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
         ListView lv = (ListView) findViewById(R.id.storesList);
         ReloadStationAdapter arrayAdapter = new ReloadStationAdapter(StoresActivity.this, stores);
         lv.setAdapter(arrayAdapter);
+        progress.dismiss();
     }
 
     public boolean checkLocationPermission() {

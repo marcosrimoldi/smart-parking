@@ -17,4 +17,7 @@
     <string name="street">Calle</string>
     <string name="number">Altura</string>
 
+    <string name="totalCost">Costo Total: $ %1$d</string>
+    <string name="loading">Espere un momento</string>
+
 </resources>
