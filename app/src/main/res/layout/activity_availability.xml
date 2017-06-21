@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/msn2"
+    android:gravity="center"
+    tools:context="com.example.marcos.smartparking.AvailabilityActivity">
+
+    <EditText
+        android:id="@+id/streetText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/street"/>
+
+    <EditText
+        android:id="@+id/numberText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:hint="@string/number"
+        android:layout_below="@+id/streetText"/>
+
+    <Button
+        android:id="@+id/searchButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button"
+        android:layout_margin="10dp"
+        android:text="@string/search"
+        android:layout_below="@+id/numberText"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:layout_below="@+id/searchButton"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@android:color/transparent"
+        android:layout_marginTop="26dp" />
+
+</RelativeLayout>

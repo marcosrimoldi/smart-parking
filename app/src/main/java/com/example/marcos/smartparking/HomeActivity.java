@@ -20,5 +20,22 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
         }
         });
+
+        Button storesButton = (Button)findViewById(R.id.storesButton);
+        storesButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, StoresActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button availabilityButton = (Button)findViewById(R.id.availabilityButton);
+        availabilityButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(HomeActivity.this, AvailabilityActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

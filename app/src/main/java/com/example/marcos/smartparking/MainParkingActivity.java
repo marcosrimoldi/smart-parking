@@ -1,7 +1,6 @@
 package com.example.marcos.smartparking;
 
 import android.Manifest;
-import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -66,8 +65,6 @@ public class MainParkingActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                //Intent myIntent = new Intent(getApplicationContext(), HomeActivity.class);
-                //startActivityForResult(myIntent, 0);
                 this.finish();
                 return true;
         }

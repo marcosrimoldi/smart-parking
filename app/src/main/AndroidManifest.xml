@@ -36,8 +36,7 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainParkingActivity"
-            android:label="@string/title_activity_main_parking">
-        </activity>
+            android:label="@string/title_activity_main_parking" />
 
         <service
             android:name=".LocationPostService"
@@ -57,9 +56,25 @@
         <activity android:name=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".AvailabilityActivity"
+            android:label="@string/title_activity_availability" />
+
+        <service
+            android:name=".AvailabilityService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <service
+            android:name=".StoresService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".StoresActivity"></activity>
     </application>
 
 </manifest>

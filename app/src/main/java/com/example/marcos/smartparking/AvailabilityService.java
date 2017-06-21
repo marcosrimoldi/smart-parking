@@ -1,14 +1,16 @@
 package com.example.marcos.smartparking;
 
+import android.app.Service;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Binder;
+import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
+import android.widget.ImageView;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -20,58 +22,65 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.google.android.gms.internal.zzt.TAG;
+public class AvailabilityService extends Service {
 
-public class CustomFirebaseInstanceIdService extends FirebaseInstanceIdService {
+    IBinder mBinder = new LocalBinder();
+    private ServiceCallbacks serviceCallbacks;
+
+    public AvailabilityService() {
+    }
 
     @Override
-    public void onTokenRefresh() {
-        // Get updated InstanceID token.
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
-        this.sendRegistrationToServer(refreshedToken);
+    public IBinder onBind(Intent intent) {
+        return mBinder;
+    }
+
+    public class LocalBinder extends Binder {
+        public AvailabilityService getServerInstance() {
+            return AvailabilityService.this;
+        }
     }
 
 
-    private void sendRegistrationToServer(String token) {
-        postToken(new TokenDTO(Constants.userIDNumber, token));
+    public void checkAvailability(AvailabilityDTO availabilityDTO) {
+        new CheckAvailabilityAsyncTask ().execute(availabilityDTO);
     }
 
-    public void postToken(TokenDTO tokenDTO) {
-        new CustomFirebaseInstanceIdService.HttpAsyncTask().execute(tokenDTO);
-    }
-
-    public static String POST(TokenDTO tokenDTO){
+    public static String POST(BaseDTO baseDTO){
         InputStream inputStream = null;
         String result = "";
         try {
 
             HttpClient httpclient = new DefaultHttpClient();
             HttpEntityEnclosingRequestBase httpRequest;
-            if (HttpPut.METHOD_NAME.equals(tokenDTO.getMethod())) {
-                httpRequest = new HttpPut(Constants.SERVER_BASE + tokenDTO.getServiceURI());
+            if (HttpPut.METHOD_NAME.equals(baseDTO.getMethod())) {
+                httpRequest = new HttpPut(Constants.SERVER_BASE + baseDTO.getServiceURI());
             }
             else {
-                httpRequest = new HttpPost(Constants.SERVER_BASE + tokenDTO.getServiceURI());
+                httpRequest = new HttpPost(Constants.SERVER_BASE + baseDTO.getServiceURI());
             }
+
             String json = "";
 
             JSONObject jsonObject = new JSONObject();
-            HashMap<String, Object> params = tokenDTO.getPropertiesAsMap();
+            HashMap<String, Object> params = baseDTO.getPropertiesAsMap();
+
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 jsonObject.accumulate(entry.getKey(), entry.getValue());
             }
 
             json = jsonObject.toString();
+
             StringEntity se = new StringEntity(json);
             httpRequest.setEntity(se);
             httpRequest.setHeader("Accept", "application/json");
             httpRequest.setHeader("Content-type", "application/json");
-            HttpResponse httpResponse = httpclient.execute(httpRequest);
 
+            HttpResponse httpResponse = httpclient.execute(httpRequest);
             inputStream = httpResponse.getEntity().getContent();
 
             if(inputStream != null)
@@ -82,23 +91,36 @@ public class CustomFirebaseInstanceIdService extends FirebaseInstanceIdService {
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
-
         return result;
     }
 
-    private class HttpAsyncTask extends AsyncTask<TokenDTO, Void, String> {
-        @Override
-        protected String doInBackground(TokenDTO... tokenDTOs) {
-            return POST(tokenDTOs[0]);
-        }
-        // onPostExecute displays the results of the AsyncTask.
+    private class CheckAvailabilityAsyncTask extends HttpAsyncTask {
         @Override
         protected void onPostExecute(String result) {
-            //Toast.makeText(getBaseContext(), "Data Sent!", Toast.LENGTH_LONG).show();
+           try {
+               if (serviceCallbacks != null) {
+                   serviceCallbacks.callback(result);
+               }
+           } catch(NumberFormatException e) {
+
+           }
         }
     }
 
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+
+    private class HttpAsyncTask extends AsyncTask<BaseDTO, Void, String> {
+        @Override
+        protected String doInBackground(BaseDTO... baseDTOs) {
+            return POST(baseDTOs[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+
+        @Override
+        protected void onPostExecute(String result) {
+        }
+    }
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException{
         BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
         String line = "";
         String result = "";
@@ -107,8 +129,10 @@ public class CustomFirebaseInstanceIdService extends FirebaseInstanceIdService {
 
         inputStream.close();
         return result;
-
     }
 
+    public void setCallbacks(ServiceCallbacks callbacks) {
+        serviceCallbacks = callbacks;
+    }
 
 }

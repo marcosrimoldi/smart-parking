@@ -17,19 +17,19 @@ android:gravity="center">
         android:text="@string/parking" />
 
     <Button
-        android:id="@+id/button12"
+        android:id="@+id/storesButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/parkingButton"
         android:background="@drawable/button"
         android:layout_margin="10dp"
-        android:text="@string/points_of_sale" />
+        android:text="@string/stores" />
 
     <Button
-        android:id="@+id/button10"
+        android:id="@+id/availabilityButton"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/button12"
+        android:layout_below="@+id/storesButton"
         android:background="@drawable/button"
         android:layout_margin="10dp"
         android:text="@string/availability" />
