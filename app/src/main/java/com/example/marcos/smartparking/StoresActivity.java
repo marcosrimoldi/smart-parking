@@ -44,10 +44,7 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
         ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        progress = new ProgressDialog(this);
-        progress.setMessage(getString(R.string.loading));
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.setCancelable(false);
+        initProgressDialog();
 
         if (checkLocationPermission()) {
             locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -178,6 +175,13 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
             // Return the completed view to render on screen
             return convertView;
         }
+    }
+
+    private void initProgressDialog() {
+        progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.loading));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setCancelable(false);
     }
 
 }
