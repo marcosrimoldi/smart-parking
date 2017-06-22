@@ -36,7 +36,12 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".MainParkingActivity"
-            android:label="@string/title_activity_main_parking" />
+            android:label="@string/title_activity_main_parking">
+            <intent-filter>
+                <action android:name="OPEN_PARKING_ACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".LocationPostService"

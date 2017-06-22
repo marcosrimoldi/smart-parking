@@ -6,7 +6,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -53,11 +52,8 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
         startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (checkLocationPermission()) {
+                    requestLocationUpdates();
                     final EditText input = (EditText) findViewById(R.id.domainText);
-                    locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                            10000, 0, locationListener);
-
                     locationPostService.postStartParking(new ParkingDTO(input.getText().toString(),
                             getLastKnownLocation()));
                     progress.show();
@@ -69,9 +65,7 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
         stopButton.setEnabled(false);
         stopButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (locationManager != null) {
-                    locationManager.removeUpdates(locationListener);
-                }
+                stopRequestingLocationUpdates();
                 locationPostService.postStopParking();
                 progress.show();
             }
@@ -160,6 +154,21 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
         return (res == PackageManager.PERMISSION_GRANTED);
     }
 
+    private void requestLocationUpdates() {
+        stopRequestingLocationUpdates();
+        if (checkLocationPermission()) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                    10000, 0, locationListener);
+        }
+    }
+
+    private void stopRequestingLocationUpdates() {
+        if (locationManager != null) {
+            locationManager.removeUpdates(locationListener);
+        }
+    }
+
     private Location getLastKnownLocation() throws SecurityException{
         List<String> providers = locationManager.getProviders(true);
         Location bestLocation = null;
@@ -215,6 +224,7 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
             final EditText input = (EditText) findViewById(R.id.domainText);
 
             if (parkingIsRunning) {
+                requestLocationUpdates();
                 String domain = jsonObj.get(Constants.GET_PARKING_DOMAIN_PARAM).toString();
                 input.setText(domain);
             }
