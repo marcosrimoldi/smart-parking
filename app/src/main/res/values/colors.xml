@@ -3,4 +3,8 @@
     <color name="colorPrimary">#4a7eb7</color>
     <color name="colorPrimaryDark">#1c71c8</color>
     <color name="colorAccent">#000f4f</color>
+
+    <color name="success">#075912</color>
+    <color name="error">#540c0c</color>
+
 </resources>

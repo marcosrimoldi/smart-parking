@@ -160,6 +160,9 @@ public class LocationPostService extends Service {
     private class StartParkingAsyncTask extends HttpAsyncTask {
         @Override
         protected void onPostExecute(String result) {
+            if (serviceCallbacks != null) {
+                serviceCallbacks.onStartParkingCallback(result);
+            }
         }
     }
 

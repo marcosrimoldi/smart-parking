@@ -1,10 +1,12 @@
 package com.example.marcos.smartparking;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,6 +32,7 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
     private LocationManager locationManager;
     private LocationPostService locationPostService;
     boolean mBounded;
+    ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) throws SecurityException {
@@ -40,9 +43,14 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        final Button button = (Button) findViewById(R.id.startButton);
-        button.setEnabled(false);
-        button.setOnClickListener(new View.OnClickListener() {
+        initProgressDialog();
+
+        TextView statusField = (TextView) findViewById(R.id.parkingStatus);
+        statusField.setText("");
+
+        final Button startButton = (Button) findViewById(R.id.startButton);
+        startButton.setEnabled(false);
+        startButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (checkLocationPermission()) {
                     final EditText input = (EditText) findViewById(R.id.domainText);
@@ -52,6 +60,7 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
 
                     locationPostService.postStartParking(new ParkingDTO(input.getText().toString(),
                             getLastKnownLocation()));
+                    progress.show();
                 }
             }
         });
@@ -64,6 +73,7 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
                     locationManager.removeUpdates(locationListener);
                 }
                 locationPostService.postStopParking();
+                progress.show();
             }
         });
 
@@ -102,6 +112,7 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
             locationPostService.setCallbacks(MainParkingActivity.this);
 
             locationPostService.postGetCurrentParking();
+            progress.show();
         }
     };
 
@@ -171,14 +182,29 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
             JSONObject jsonObj = new JSONObject(result);
             Long cost = Long.valueOf(jsonObj.get(Constants.STOP_PARKING_RESPONSE_PARAM).toString())/100;
             TextView costField = (TextView) findViewById(R.id.totalCost);
-            costField.setText(getString(R.string.totalCost, cost));
-            final Button button = (Button) findViewById(R.id.startButton);
-            button.setEnabled(true);
-            final Button stopButton = (Button) findViewById(R.id.stopButton);
-            stopButton.setEnabled(false);
+            costField.setText(getString(R.string.total_cost, cost));
+            updateUIElements(Boolean.FALSE, Boolean.TRUE);
+            progress.dismiss();
+
         } catch (JSONException e) {
             Toast.makeText(MainParkingActivity.this, "Servicio no disponible.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void updateUIElements(Boolean isParkingRunning, Boolean showStopptedStatus) {
+        final Button startButton = (Button) findViewById(R.id.startButton);
+        final Button stopButton = (Button) findViewById(R.id.stopButton);
+
+        startButton.setEnabled(!isParkingRunning);
+        stopButton.setEnabled(isParkingRunning);
+        TextView statusField = (TextView) findViewById(R.id.parkingStatus);
+
+        String statusText = isParkingRunning ? getString(R.string.parking_active) :
+                showStopptedStatus ? getString(R.string.parking_finished) : "";
+
+        int statusColor = isParkingRunning ? getResources().getColor(R.color.success) : getResources().getColor(R.color.error);
+        statusField.setTextColor(statusColor);
+        statusField.setText(statusText);
     }
 
     @Override
@@ -186,28 +212,34 @@ public class MainParkingActivity extends AppCompatActivity implements ParkingSer
         try {
             JSONObject jsonObj = new JSONObject(result);
             Boolean parkingIsRunning = Boolean.valueOf(jsonObj.get(Constants.GET_PARKING_RUNNING_PARAM).toString());
+            final EditText input = (EditText) findViewById(R.id.domainText);
 
             if (parkingIsRunning) {
                 String domain = jsonObj.get(Constants.GET_PARKING_DOMAIN_PARAM).toString();
-                final EditText input = (EditText) findViewById(R.id.domainText);
                 input.setText(domain);
-                final Button stopButton = (Button) findViewById(R.id.stopButton);
-                stopButton.setEnabled(true);
-                final Button button = (Button) findViewById(R.id.startButton);
-                button.setEnabled(false);
             }
             else {
-                final Button button = (Button) findViewById(R.id.startButton);
-                button.setEnabled(true);
-                final Button stopButton = (Button) findViewById(R.id.stopButton);
-                stopButton.setEnabled(false);
-                final EditText input = (EditText) findViewById(R.id.domainText);
                 input.setText("");
             }
+
+            updateUIElements(parkingIsRunning, Boolean.FALSE);
+            progress.dismiss();
+
         } catch (JSONException e) {
             Toast.makeText(MainParkingActivity.this, "Servicio no disponible.", Toast.LENGTH_LONG).show();
         }
     }
 
+    @Override
+    public void onStartParkingCallback(String result) {
+        updateUIElements(Boolean.TRUE, Boolean.TRUE);
+        progress.dismiss();
+    }
 
+    private void initProgressDialog() {
+        progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.loading));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setCancelable(false);
+    }
 }

@@ -33,10 +33,7 @@ public class AvailabilityActivity extends AppCompatActivity implements ServiceCa
         ActivityCompat.requestPermissions(this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        progress = new ProgressDialog(this);
-        progress.setMessage(getString(R.string.loading));
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.setCancelable(false);
+        initProgressDialog();
 
         final Button button = (Button) findViewById(R.id.searchButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -127,5 +124,12 @@ public class AvailabilityActivity extends AppCompatActivity implements ServiceCa
         } catch (JSONException e) {
             Toast.makeText(AvailabilityActivity.this, "Servicio no disponible.", Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void initProgressDialog() {
+        progress = new ProgressDialog(this);
+        progress.setMessage(getString(R.string.loading));
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setCancelable(false);
     }
 }
