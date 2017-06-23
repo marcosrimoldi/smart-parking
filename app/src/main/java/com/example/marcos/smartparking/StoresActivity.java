@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -129,6 +130,18 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
         ListView lv = (ListView) findViewById(R.id.storesList);
         ReloadStationAdapter arrayAdapter = new ReloadStationAdapter(StoresActivity.this, stores);
         lv.setAdapter(arrayAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                Intent intent = new Intent(StoresActivity.this, MapsActivity.class);
+                ReloadStation store = (ReloadStation) arg0.getItemAtPosition(arg2);
+                intent.putExtra("lat", store.getLatitude());
+                intent.putExtra("lng", store.getLongitude());
+                intent.putExtra("title", store.getDisplayInfo());
+                startActivity(intent);
+            }
+
+        });
         progress.dismiss();
     }
 
