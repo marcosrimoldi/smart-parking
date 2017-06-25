@@ -40,10 +40,21 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="160dp"
         android:layout_below="@+id/searchButton"
         android:layout_centerHorizontal="true"
         app:srcCompat="@android:color/transparent"
+        android:layout_marginBottom="10dp"
         android:layout_marginTop="26dp" />
 
+    <TextView
+        android:id="@+id/availabilityText"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_below="@+id/imageView"
+        android:textSize="22sp"
+        android:layout_marginLeft="12dp"/>
 </RelativeLayout>

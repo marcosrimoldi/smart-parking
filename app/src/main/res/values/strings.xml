@@ -22,4 +22,10 @@
     <string name="parking_active">Estacionamiento Activo</string>
     <string name="parking_finished">Estacionamiento Finalizado</string>
 
+    <string name="availability_high">Disponibilidad Alta</string>
+    <string name="availability_medium">Disponibilidad Media</string>
+    <string name="availability_low">Disponibilidad Baja</string>
+
+    <string name="no_data_available">No hay resultados</string>
+
 </resources>

@@ -128,6 +128,8 @@ public class StoresActivity extends AppCompatActivity implements ServiceCallback
         }
 
         ListView lv = (ListView) findViewById(R.id.storesList);
+        lv.setEmptyView(findViewById(R.id.noResults));
+
         ReloadStationAdapter arrayAdapter = new ReloadStationAdapter(StoresActivity.this, stores);
         lv.setAdapter(arrayAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
